@@ -1,15 +1,17 @@
-const express = require('express');
-const app = express ();
+const express = require('express')
+const app = express ()
 const dotenv = require('dotenv')
 const cors = require('cors')
-const CategoryRouter = require('./routes/category');
-const AuthRouter = require('./routes/AuthRouter');
-const morgan = require('morgan');
+const CategoryRouter = require('./routes/category')
+const AuthRouter = require('./routes/AuthRouter')
+const morgan = require('morgan')
+const { errorHandler, notFound } = require('./middleware/errorMiddleware')
 
 dotenv.config();
 
 //middleware
 app.use(express.json())
+
 // app.use((req, res, next) => {
 //     req.requestTime = new Date().toISOString();
 //     next()
@@ -18,12 +20,14 @@ app.use(express.json())
 app.use(morgan("dev"))
 app.use(cors())
 
+//router categories
+app.use('/api/v1/categories', CategoryRouter);
 //route auth
 app.use('/api/v1/auth', AuthRouter);
 
-//router categories
-app.use('/api/v1/categories', CategoryRouter);
-
+//middleware error handlers
+// app.use(notFound)
+app.use(notFound, errorHandler)
 
 //server
 const port = process.env.PORT

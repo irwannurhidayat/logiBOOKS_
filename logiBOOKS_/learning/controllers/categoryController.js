@@ -1,4 +1,6 @@
 const {Category} = require('../models')
+const asyncHandle = require('../middleware/asyncHandle')
+const { errorHandler } = require('../middleware/errorMiddleware')
 
 module.exports = {
     getAllCategory : async (req, res) => {
@@ -39,8 +41,7 @@ module.exports = {
         }
     },
 
-    storeCategory : async (req, res) => { 
-        try {
+    storeCategory : asyncHandle ( async (req, res) => { 
         let {name, description} = req.body;
 
         const newCategory = await Category.create(
@@ -53,17 +54,11 @@ module.exports = {
             status: "success",
             data:newCategory
         })
-    } catch (error) {
-            return res.status(400).json({
-                status: 'Failed',
-                error: error.errors
-            })
-        }
-    },
+    }),
 
-    updateCategory : async (req, res) => {
-        try {
-            const id = req.params.id
+    updateCategory : asyncHandle ( async (req, res) => {
+
+            const id = req.params.id;
             await Category.update(req.body, {
                 where: {
                 id: id
@@ -71,27 +66,16 @@ module.exports = {
             });
 
             const newCategory = await Category.findByPk(id);
-
-            if(!newCategory) {
-                return res.status(404).json(
-                    {
-                        status:'Failed',
-                        message: 'Category not found'
-                    })
+            if (!newCategory){
+                res.status(404);
+                throw new Error("category not found")
             }
 
             return res.status(200).json({
                 status:'Success',
                 data: newCategory
             })
-
-        } catch (error) {
-            return res.status(500).json({
-                status: 'Failed',
-                error: "server down"
-            })
-        }
-    },
+    }),
 
     deleteCategory : async (req, res) => {
         try {
