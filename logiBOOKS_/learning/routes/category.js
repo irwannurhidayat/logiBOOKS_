@@ -1,11 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {
-    getAllCategory, 
-    getAllCategoryById, 
-    storeCategory, 
-    updateCategory, 
-    deleteCategory } = require('../controllers/categoryController');
+const { getAllCategory, getAllCategoryById, storeCategory, updateCategory, deleteCategory } = require('../controllers/categoryController');
 const { authMiddleware, permissionUser } = require('../middleware/UserMiddleware');
 
 //routes category

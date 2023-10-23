@@ -5,14 +5,16 @@ module.exports = {
     authMiddleware : async (req, res, next) => {
     //jika ada/tidak token dalam header
     let token;
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-        token = req.headers.authorization.split(' ')[1]
-    }
+    // if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    //     token = req.headers.authorization.split(' ')[1]
+    // }
+
+    token = req.cookies.jwt
 
     if(!token) {
         return next(res.status(401).json({
             status: 401,
-            message: "Token tidak ditemukan!"
+            message: "Token tidak ditemukan || Anda belum Login"
         }))
     }
 

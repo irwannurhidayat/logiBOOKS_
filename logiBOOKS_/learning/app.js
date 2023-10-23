@@ -5,12 +5,14 @@ const cors = require('cors')
 const CategoryRouter = require('./routes/category')
 const AuthRouter = require('./routes/AuthRouter')
 const morgan = require('morgan')
+const cookieParse =require ('cookie-parser')
 const { errorHandler, notFound } = require('./middleware/errorMiddleware')
 
 dotenv.config();
 
 //middleware
 app.use(express.json())
+app.use(cookieParse())
 
 // app.use((req, res, next) => {
 //     req.requestTime = new Date().toISOString();
@@ -26,8 +28,8 @@ app.use('/api/v1/categories', CategoryRouter);
 app.use('/api/v1/auth', AuthRouter);
 
 //middleware error handlers
-// app.use(notFound)
-app.use(notFound, errorHandler)
+app.use(notFound)
+app.use(errorHandler)
 
 //server
 const port = process.env.PORT

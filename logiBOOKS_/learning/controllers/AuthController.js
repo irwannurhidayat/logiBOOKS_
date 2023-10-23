@@ -23,7 +23,6 @@ const createSendToken = (user, statusCode, res) => {
 
     res.status(statusCode).json({
         status : 'success',
-        token,
         data : {
             user
         }
@@ -81,5 +80,34 @@ module.exports = {
 
         //res token pada login
        createSendToken(userData, 200, res)
+    },
+
+    logoutUser : async (req, res) => {
+        res.cookie('jwt', '',{
+            httpOnly: true,
+            expire: new Date(0)
+        })
+
+        res.status(200).json({
+            message: 'Logout successful'
+        })
+    },
+
+    getMyUsers : async (req, res) =>{
+        const currentUser = await User.findByPk(req.user.id)
+
+        if(currentUser){
+            return res.status(200).json({
+                id: currentUser.id,
+                role_id: currentUser.role_id,
+                name: currentUser.name,
+                email: currentUser.email
+            })
+        }
+
+        return res.status(404).json({
+            message: 'User not found'
+        })
     }
+
 }
